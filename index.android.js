@@ -38,6 +38,36 @@ export default class BeeperApp extends Component {
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       },
+
+      markers: [
+        {
+          coordinate: {
+            latitude: LATITUDE + 5*SPACE,
+            longitude: LONGITUDE + 5*SPACE,
+          },
+          title: 'First marker',
+          description: 'Description for first marker',
+          key: 'first',
+        },
+        {
+          coordinate: {
+            latitude: LATITUDE,
+            longitude: LONGITUDE,
+          },
+          title: 'Second marker',
+          description: 'Description for second marker',
+          key: 'second',
+        },
+        {
+          coordinate: {
+            latitude: LATITUDE + 5*SPACE,
+            longitude: LONGITUDE - 5*SPACE,
+          },
+          title: 'Third marker',
+          description: 'Description for third marker',
+          key: 'third'
+        },
+      ],      
     };
   }
 
@@ -53,28 +83,16 @@ export default class BeeperApp extends Component {
           loadingEnabled
           loadingIndicatorColor="#666666"
           loadingBackgroundColor="#eeeeee">
-          <MapView.Marker
-            coordinate={{
-              latitude: LATITUDE + SPACE,
-              longitude: LONGITUDE + SPACE,
-            }}
-            centerOffset={{ x: -18, y: -60 }}
-            anchor={{ x: 0.69, y: 1 }}
-          />
-          <MapView.Marker
-            coordinate={{
-              latitude: LATITUDE - SPACE,
-              longitude: LONGITUDE - SPACE,
-            }}
-            centerOffset={{ x: -42, y: -60 }}
-            anchor={{ x: 0.84, y: 1 }}
-          >
-            <MapView.Callout>
-              <View>
-                <Text>This is a plain view</Text>
-              </View>
-            </MapView.Callout>
-          </MapView.Marker>
+
+          {this.state.markers.map(marker => (
+            <MapView.Marker
+              coordinate={marker.coordinate}
+              title={marker.title}
+              description={marker.description}
+              key={marker.key}
+            />
+          ))}
+
         </MapView>
 
         <View style={styles.buttonContainer}>

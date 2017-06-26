@@ -1,0 +1,49 @@
+﻿      <View style={styles.container}>
+        <Text style={styles.welcome}>
+          Welcome to React Native!
+        </Text>
+        <Text style={styles.instructions}>
+          To get started, edit index.android.js
+        </Text>
+        <Text style={styles.instructions}>
+          Double tap R on your keyboard to reload,{'\n'}
+          Shake or press menu button for dev menu
+        </Text>
+      </View>
+
+
+
+C6 3A E3 FD D2 70 86 EA 5C B0 70 34 01 86 CB F7 56 29 98 C5
+
+
+container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
+
+
+
+          <MapView.Marker
+            coordinate={{
+              latitude: LATITUDE + SPACE,
+              longitude: LONGITUDE + SPACE,
+            }}
+            centerOffset={{ x: -18, y: -60 }}
+            anchor={{ x: 0.69, y: 1 }}
+          />
+          <MapView.Marker
+            coordinate={{
+              latitude: LATITUDE - SPACE,
+              longitude: LONGITUDE - SPACE,
+            }}
+            centerOffset={{ x: -42, y: -60 }}
+            anchor={{ x: 0.84, y: 1 }}
+          >
+            <MapView.Callout>
+              <View>
+                <Text>This is a plain view</Text>
+              </View>
+            </MapView.Callout>
+          </MapView.Marker>
