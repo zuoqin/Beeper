@@ -5,39 +5,103 @@
  */
 
 import React, { Component } from 'react';
+import MapView from 'react-native-maps';
+
+
 import {
   AppRegistry,
   StyleSheet,
   Text,
-  View
+  View,
+  Dimensions  
 } from 'react-native';
 
+
+const { width, height } = Dimensions.get('window');
+
+const ASPECT_RATIO = width / height;
+const LATITUDE = 32.0853;
+const LONGITUDE = 34.7818;
+const LATITUDE_DELTA = 0.0922;
+const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+const SPACE = 0.01;
+
 export default class BeeperApp extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      region: {
+        latitude: LATITUDE,
+        longitude: LONGITUDE,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      },
+    };
+  }
+
+
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.android.js
-        </Text>
-        <Text style={styles.instructions}>
-          Double tap R on your keyboard to reload,{'\n'}
-          Shake or press menu button for dev menu
-        </Text>
+        <MapView
+          provider={this.props.provider}
+          style={styles.map}
+          initialRegion={this.state.region}
+          onPress={this.onMapPress}
+          loadingEnabled
+          loadingIndicatorColor="#666666"
+          loadingBackgroundColor="#eeeeee">
+          <MapView.Marker
+            coordinate={{
+              latitude: LATITUDE + SPACE,
+              longitude: LONGITUDE + SPACE,
+            }}
+            centerOffset={{ x: -18, y: -60 }}
+            anchor={{ x: 0.69, y: 1 }}
+          />
+          <MapView.Marker
+            coordinate={{
+              latitude: LATITUDE - SPACE,
+              longitude: LONGITUDE - SPACE,
+            }}
+            centerOffset={{ x: -42, y: -60 }}
+            anchor={{ x: 0.84, y: 1 }}
+          >
+            <MapView.Callout>
+              <View>
+                <Text>This is a plain view</Text>
+              </View>
+            </MapView.Callout>
+          </MapView.Marker>
+        </MapView>
+
+        <View style={styles.buttonContainer}>
+          <View style={styles.bubble}>
+            <Text>Map with Loading</Text>
+          </View>
+        </View>        
       </View>
     );
   }
 }
 
+
+BeeperApp.propTypes = {
+  provider: MapView.ProviderPropType,
+};
+
+
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'flex-end',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
+  },  
+  map: {
+    ...StyleSheet.absoluteFillObject,
+  },  
   welcome: {
     fontSize: 20,
     textAlign: 'center',
