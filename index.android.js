@@ -7,13 +7,20 @@
 import React, { Component } from 'react';
 import MapView from 'react-native-maps';
 
+import BackgroundTimer from 'react-native-background-timer';
+import PriceMarker from './PriceMarker';
+//import TimerMixin from 'react-timer-mixin';
+//import reactMixin from 'react-mixin';
+//const timer = require('react-native-timer');
+
 
 import {
   AppRegistry,
   StyleSheet,
   Text,
   View,
-  Dimensions  
+  Dimensions,
+  Animated,
 } from 'react-native';
 
 
@@ -26,8 +33,52 @@ const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 const SPACE = 0.01;
 
+
+//const intervalId = BackgroundTimer.setInterval(() => {
+  // this will be executed every 200 ms
+  // even when app is the the background/
+//  console.log('tic');
+
+
+
+//}, 200);
+
+
 export default class BeeperApp extends Component {
 
+  mixins: [TimerMixin]
+
+  makeid()
+  {
+      var text = "";
+      var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+      for( var i=0; i < 5; i++ )
+          text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+      return text;
+  }
+
+
+  updateMarkers() {
+    this.setState(this.state, () => timer.setTimeout(
+      this, 'hideMsg', () => {
+
+        this.setState({
+          //fadeAnim: 87,
+          amounts: [Math.round(Math.random() * 100.0), Math.round(Math.random() * 100.0), Math.round(Math.random() * 100.0)],
+        })
+        // this.state.markers[0].title = this.makeid();
+        // this.state.markers[1].title = this.makeid();
+        // this.state.markers[2].title = this.makeid();
+
+        // this.state.markers[0].amount = Math.round(100*Math.random());
+        // this.state.markers[1].amount = Math.round(100*Math.random());
+        // this.state.markers[2].amount = Math.round(100*Math.random());
+      }, 3000
+    ));
+  }
+  
   constructor(props) {
     super(props);
 
@@ -38,16 +89,19 @@ export default class BeeperApp extends Component {
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       },
-
+      titles: [this.makeid(), this.makeid(), this.makeid()],
+      amounts: [56, 67, 78],
+      //fadeAnim: new Animated.Value(0),
       markers: [
         {
           coordinate: {
-            latitude: LATITUDE + 5*SPACE,
-            longitude: LONGITUDE + 5*SPACE,
+            latitude: LATITUDE + Math.round(Math.random()*6)*SPACE,
+            longitude: LONGITUDE + Math.round(Math.random()*6)*SPACE,
           },
           title: 'First marker',
           description: 'Description for first marker',
           key: 'first',
+          amount: 76,
         },
         {
           coordinate: {
@@ -57,20 +111,73 @@ export default class BeeperApp extends Component {
           title: 'Second marker',
           description: 'Description for second marker',
           key: 'second',
+          amount: 74,
         },
         {
           coordinate: {
-            latitude: LATITUDE + 5*SPACE,
-            longitude: LONGITUDE - 5*SPACE,
+            latitude: LATITUDE + Math.round(Math.random()*6)*SPACE,
+            longitude: LONGITUDE - Math.round(Math.random()*6)*SPACE,
           },
           title: 'Third marker',
           description: 'Description for third marker',
-          key: 'third'
+          key: 'third',
+          amount: 554,
         },
-      ],      
+      ], 
+
     };
+  }  
+
+  componentDidMount() {
+    // Animated.timing(          // Uses easing functions
+    //   this.state.fadeAnim,
+    //   {toValue: 100,
+    //     delay: 300,
+    //     duration: 50000
+    //   }            // Configuration
+    // ).start();                // Don't forget start!
+
+
+    //this.updateMarkers();
+    // timer.setTimeout(this, 'hideMsg',
+    //   () => {
+    //     this.setState({
+    //       //fadeAnim: 87,
+    //       amounts: [Math.round(Math.random() * 100.0), Math.round(Math.random() * 100.0), Math.round(Math.random() * 100.0)],
+    //     })
+    //     //this.state.marker[0].title = makeid();
+    //     //this.state.marker[1].title = makeid();
+    //     //this.state.marker[2].title = makeid();
+    //     //console.log('I do not leak!');
+    //   },
+
+
+    //   500
+    // );   
+
+
+
+    // Start a timer that runs continuous after X milliseconds
+    const intervalId = BackgroundTimer.setInterval(() => {
+      // this will be executed every 200 ms
+      // even when app is the the background
+      this.setState({
+    //       //fadeAnim: 87,
+          amounts: [Math.round(Math.random() * 100.0), Math.round(Math.random() * 100.0), Math.round(Math.random() * 100.0)],
+      });
+      console.log('tic');
+    }, 200);    
   }
 
+
+  getamountbykey(key){
+    for (var i=0; i < this.state.markers.length; i++) {
+        if (this.state.markers[i].key === key) {
+            return this.state.amounts[i];
+        }
+    }
+    //return this.state.fadeAnim;
+  }
 
   render() {
     return (
@@ -85,12 +192,13 @@ export default class BeeperApp extends Component {
           loadingBackgroundColor="#eeeeee">
 
           {this.state.markers.map(marker => (
-            <MapView.Marker
+            <MapView.Marker.Animated
               coordinate={marker.coordinate}
               title={marker.title}
               description={marker.description}
-              key={marker.key}
-            />
+              key={marker.key}>
+              <PriceMarker amount={this.getamountbykey(marker.key)} />
+            </MapView.Marker.Animated>
           ))}
 
         </MapView>
