@@ -21,8 +21,9 @@ import {
   View,
   Dimensions,
   Animated,
+  Button,
 } from 'react-native';
-
+import { StackNavigator } from 'react-navigation';
 
 const { width, height } = Dimensions.get('window');
 
@@ -34,19 +35,33 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 const SPACE = 0.01;
 
 
-//const intervalId = BackgroundTimer.setInterval(() => {
-  // this will be executed every 200 ms
-  // even when app is the the background/
-//  console.log('tic');
+class HomeScreen extends React.Component {
+  static navigationOptions = {
+    title: 'Beeper Administration',
+  };
+  render() {
+    const { navigate } = this.props.navigation;
+    return (
+      <View>
+        {/*<Text>Beeper Administration</Text>*/}
+        <Button
+          onPress={() => navigate('BeeperMap')}
+          title="Go to Map view"
+        />
+        <Button
+          onPress={() => navigate('BeeperMap')}
+          title="Go to Map view"
+        />
+        
+      </View>
+    );
+  }
+}
 
-
-
-//}, 200);
-
-
-export default class BeeperApp extends Component {
-
-  mixins: [TimerMixin]
+class BeeperMapView extends React.Component {
+  static navigationOptions = {
+    title: 'Chat with Lucy',
+  };
 
   makeid()
   {
@@ -214,7 +229,7 @@ export default class BeeperApp extends Component {
 }
 
 
-BeeperApp.propTypes = {
+BeeperMapView.propTypes = {
   provider: MapView.ProviderPropType,
 };
 
@@ -239,5 +254,12 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
+
+const BeeperApp = StackNavigator({
+  Home: { screen: HomeScreen },
+  BeeperMap: { screen: BeeperMapView },
+});
+
+
 
 AppRegistry.registerComponent('BeeperApp', () => BeeperApp);
